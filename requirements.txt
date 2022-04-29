@@ -1,0 +1,3 @@
+pyorbital >= 1.7.1
+schedule >= 1.1.0
+pyrtlsdr >= 0.2.92
