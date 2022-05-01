@@ -45,7 +45,7 @@ class Buffer:
                 flag = True
         os.rename(self.id + '.tmp', filename + '.iq')
 
-def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, duration):
+def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, duration: int):
     """
     Captures data from the satellite.
     """
@@ -62,7 +62,3 @@ def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, dur
     sdr.cancel_read_async()
     thr.join()
     buff.wav(id + "(IQ)", sdr.sample_rate)
-
-#sat = Satellite.Satellite("test", "testt", "aaa", 104000000, 150000, None, None)
-#device = Device.config(49.6, 250000, 0)
-#run(device, sat, 60)
