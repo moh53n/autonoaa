@@ -6,6 +6,9 @@ from time import sleep, time
 import threading
 import wavfile
 import os
+import datetime
+import process
+import scipy
 
 class Buffer:
     id = None
@@ -25,7 +28,7 @@ class Buffer:
         Handler for the buffer.
         """
         with open(self.id + ".tmp", 'ab') as f:
-            samples.tofile(f)
+            samples.astype(numpy.complex64).tofile(f)
 
     def wav(self, filename, sample_rate):
         """
@@ -34,7 +37,7 @@ class Buffer:
         flag = False
         with open(self.id + '.tmp', 'rb') as f:
             for chunk in self.read_in_chunks(f):
-                buff = numpy.frombuffer(chunk, dtype=numpy.complex128)
+                buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
                 print(buff)
                 print(buff.shape)
                 wav_samples = numpy.zeros((len(buff), 2), dtype=numpy.float32)
@@ -62,3 +65,30 @@ def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, dur
     sdr.cancel_read_async()
     thr.join()
     buff.wav(id + "(IQ)", sdr.sample_rate)
+
+def read_in_chunks(file_object, chunk_size = 1024 * 1024 * 10):
+        while True:
+            data = file_object.read(chunk_size)
+            if not data:
+                break
+            yield data
+
+def run(device_conf: Device.config, satellite: Satellite.Satellite, duration: int):
+    """
+    Run a capture
+    """
+    id = satellite.name + "-" + str(int(time()))
+    rec(id, device_conf, satellite, duration)
+    flag = False
+    with open(id + "(IQ).iq", 'rb') as f:
+        for chunk in read_in_chunks(f, 8*device_conf.sample_rate*30):
+            buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
+            print(buff)
+            buff = process.bandpass_filter(buff, device_conf.sample_rate, satellite.bandwidth)
+            buff = process.demodulator.fm_demod(buff)
+            coef = 20800 / device_conf.sample_rate
+            samples = int(coef * len(buff))
+            buff = scipy.signal.resample(buff, samples)
+            with open(id + "(FM).wav", 'ab') as f2:
+                wavfile.write(f2, 20800, buff.astype(numpy.float32), flag, os.path.getsize(id + "(IQ).iq")//2)
+            flag = True
