@@ -4,6 +4,7 @@ import scipy
 from ..helpers import wavfile
 import os
 from ..decoders import APT
+import struct
 
 class demodulator:
     def fm_demod(x, df=1.0, fc=0.0):
@@ -32,11 +33,13 @@ def apt_process(id, sample_rate, bandwidth):
             coef = 20800 / sample_rate
             samples = int(coef * len(buff))
             buff = scipy.signal.resample(buff, samples)
-            with open(id + "(FM).wav", 'wb') as f2:
-                pass
-            with open(id + "(FM).wav", 'r+b') as f2:
-                wavfile.write(f2, 20800, buff.astype(numpy.float32), flag, os.path.getsize(id + "(IQ).iq")//2)
+            with open(id + "(FM).wav", 'ab') as f2:
+                size = wavfile.write(f2, 20800, buff.astype(numpy.float32), flag, os.path.getsize(id + "(IQ).iq")//2)
             flag = True
+    print(size)
+    with open(id + "(FM).wav", 'r+b') as fid:
+        fid.seek(4)
+        fid.write(struct.pack('<I', size-8))
     apt = APT(id + "(FM).wav")
     apt.decode(id + '.png')
 

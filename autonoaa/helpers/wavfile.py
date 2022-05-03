@@ -792,7 +792,7 @@ def write(filename, rate, data, chunk = False, nbytes = 1024):
             fid.close()
         else:
             fid.seek(0)
-
+    return size
 
 def _array_tofile(fid, data):
     # ravel gives a c-contiguous buffer
