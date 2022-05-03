@@ -8,7 +8,6 @@ from ..helpers import wavfile
 import os
 import datetime
 from . import process
-import scipy
 
 class Buffer:
     id = None
@@ -66,29 +65,13 @@ def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, dur
     thr.join()
     buff.wav(id + "(IQ)", sdr.sample_rate)
 
-def read_in_chunks(file_object, chunk_size = 1024 * 1024 * 10):
-        while True:
-            data = file_object.read(chunk_size)
-            if not data:
-                break
-            yield data
-
 def run(device_conf: Device.config, satellite: Satellite.Satellite, duration: int):
     """
     Run a capture
     """
     id = satellite.name + "-" + str(int(time()))
     rec(id, device_conf, satellite, duration)
-    flag = False
-    with open(id + "(IQ).iq", 'rb') as f:
-        for chunk in read_in_chunks(f, 8*device_conf.sample_rate*30):
-            buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
-            print(buff)
-            buff = process.bandpass_filter(buff, device_conf.sample_rate, satellite.bandwidth)
-            buff = process.demodulator.fm_demod(buff)
-            coef = 20800 / device_conf.sample_rate
-            samples = int(coef * len(buff))
-            buff = scipy.signal.resample(buff, samples)
-            with open(id + "(FM).wav", 'ab') as f2:
-                wavfile.write(f2, 20800, buff.astype(numpy.float32), flag, os.path.getsize(id + "(IQ).iq")//2)
-            flag = True
+    if (satellite.service).lower() == "apt":
+        process.apt_process(id, device_conf.sample_rate, satellite.bandwidth)
+    else:
+        print("Satellite service not supported.")
