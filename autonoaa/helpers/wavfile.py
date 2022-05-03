@@ -784,8 +784,6 @@ def write(filename, rate, data, chunk = False, nbytes = 1024):
         # Determine file size and place it in correct
         #  position at start of the file.
         size = fid.tell()
-        fid.seek(4)
-        fid.write(struct.pack('<I', size-8))
 
     finally:
         if not hasattr(filename, 'write'):
