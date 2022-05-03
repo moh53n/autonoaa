@@ -34,9 +34,8 @@ def apt_process(id, sample_rate, bandwidth):
             samples = int(coef * len(buff))
             buff = scipy.signal.resample(buff, samples)
             with open(id + "(FM).wav", 'ab') as f2:
-                size = wavfile.write(f2, 20800, buff.astype(numpy.float32), flag, os.path.getsize(id + "(IQ).iq")//2)
+                size = wavfile.write(f2, 20800, ((buff.astype(numpy.float32)) * 32767).astype(numpy.int16), flag, os.path.getsize(id + "(IQ).iq")//2)
             flag = True
-    print(size)
     with open(id + "(FM).wav", 'r+b') as fid:
         fid.seek(4)
         fid.write(struct.pack('<I', size-8))
