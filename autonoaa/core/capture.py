@@ -1,13 +1,13 @@
-import Satellite
+from . import Satellite
 import rtlsdr
-import Device
+from . import Device
 import numpy
 from time import sleep, time
 import threading
-import wavfile
+from ..helpers import wavfile
 import os
 import datetime
-import process
+from . import process
 import scipy
 
 class Buffer:
@@ -16,7 +16,7 @@ class Buffer:
     def __init__(self) -> None:
         self.id = str(int(time()))
 
-    def read_in_chunks(self, file_object, chunk_size = 1024 * 1024 * 10):
+    def _read_in_chunks(self, file_object, chunk_size = 1024 * 1024 * 10):
         while True:
             data = file_object.read(chunk_size)
             if not data:
@@ -36,7 +36,7 @@ class Buffer:
         """
         flag = False
         with open(self.id + '.tmp', 'rb') as f:
-            for chunk in self.read_in_chunks(f):
+            for chunk in self._read_in_chunks(f):
                 buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
                 print(buff)
                 print(buff.shape)
