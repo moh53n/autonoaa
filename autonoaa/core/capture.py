@@ -58,7 +58,7 @@ def rec(id: str, device_conf: Device.config, satellite: Satellite.Satellite, dur
     sdr.center_freq = satellite.frequency
     sdr.bandwidth = satellite.bandwidth
     buff = Buffer()
-    thr = threading.Thread(target=sdr.read_samples_async, args=(buff.buff_handler,200*1024), kwargs={})
+    thr = threading.Thread(target=sdr.read_samples_async, args=(buff.buff_handler, 512 * 1024), kwargs={})
     thr.start()
     sleep(duration + 5)
     sdr.cancel_read_async()
