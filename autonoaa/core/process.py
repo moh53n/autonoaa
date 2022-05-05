@@ -27,10 +27,13 @@ def apt_process(id, sample_rate, bandwidth):
     with open(id + "(IQ).iq", 'rb') as f:
         for chunk in read_in_chunks(f, 8*sample_rate*30):
             buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
-            print(buff)
-            buff = bandpass_filter(buff, sample_rate, bandwidth)
+            #print(buff)
+            coef = 250000 / sample_rate
+            samples = int(coef * len(buff))
+            buff = scipy.signal.resample(buff, samples)
+            buff = bandpass_filter(buff, 250000, bandwidth)
             buff = demodulator.fm_demod(buff)
-            coef = 20800 / sample_rate
+            coef = 20800 / 250000
             samples = int(coef * len(buff))
             buff = scipy.signal.resample(buff, samples)
             with open(id + "(FM).wav", 'ab') as f2:
