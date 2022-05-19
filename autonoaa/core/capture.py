@@ -8,6 +8,7 @@ from ..helpers import wavfile
 import os
 import datetime
 from . import process
+import scipy.signal
 
 class Buffer:
     id = None
@@ -27,6 +28,9 @@ class Buffer:
         Handler for the buffer.
         """
         with open(self.id + ".tmp", 'ab') as f:
+            coef = 250000 / context.sample_rate
+            samples_n = int(coef * len(samples))
+            samples = scipy.signal.resample(samples, samples_n)
             samples.astype(numpy.complex64).tofile(f)
 
     def wav(self, filename, sample_rate):
@@ -43,7 +47,7 @@ class Buffer:
                 wav_samples[...,0] = buff.real
                 wav_samples[...,1] = buff.imag
                 with open(filename + '.wav', 'ab') as f2:
-                    wavfile.write(f2, int(sample_rate), wav_samples, flag, os.path.getsize(self.id + '.tmp'))
+                    wavfile.write(f2, 250000, wav_samples, flag, os.path.getsize(self.id + '.tmp'))
                 flag = True
         os.rename(self.id + '.tmp', filename + '.iq')
 

@@ -28,9 +28,9 @@ def apt_process(id, sample_rate, bandwidth):
         for chunk in read_in_chunks(f, 8*sample_rate*30):
             buff = numpy.frombuffer(chunk, dtype=numpy.complex64)
             #print(buff)
-            coef = 250000 / sample_rate
-            samples = int(coef * len(buff))
-            buff = scipy.signal.resample(buff, samples)
+            #coef = 250000 / sample_rate
+            #samples = int(coef * len(buff))
+            #buff = scipy.signal.resample(buff, samples)
             buff = bandpass_filter(buff, 250000, bandwidth)
             buff = demodulator.fm_demod(buff)
             coef = 20800 / 250000
