@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="autonoaa",
-    version="0.0.1",
+    version="0.1",
     author="Mohsen Tahmasebi",
     author_email="moh53n@moh53n.ir",
     description="An automatic weather satellite receiver for SDR dongles",
@@ -25,5 +25,10 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
     license='MIT',
-    install_requires=['pyrtlsdr', 'numpy', 'scipy', 'Pillow', 'pyorbital'],
+    install_requires=['python-crontab', 'pyorbital', 'requests', 'python-dateutil'],
+    entry_points = {
+        'console_scripts': [
+            'autonoaa = autonoaa:main',
+        ],
+    },
 )

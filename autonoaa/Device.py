@@ -1,4 +1,4 @@
-class config:
+class Device:
 
     gain = None
     sample_rate = None
