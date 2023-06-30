@@ -10,7 +10,6 @@ from autonoaa.Recorder.capture import capture
 from crontab import CronTab
 import re
 
-#TODO: first time setup
 #TODO: Add reschedule cronjob
 #TODO; Fix package struct and INITs
 def main():
