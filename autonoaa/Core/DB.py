@@ -45,7 +45,7 @@ def get_pass_count(sat_id, pass_start):
     return db_models.Pass.select().where(db_models.Pass.sat_id == sat_id, db_models.Pass.pass_start == pass_start).count()
 
 def pass_set_done(pass_id):
-    pass_ = db_models.Pass.get(db_models.Pass.id == pass_id)
+    pass_ = db_models.Pass.get(db_models.Pass.pass_id == pass_id)
     pass_.pass_done = True
     pass_.save()
 
