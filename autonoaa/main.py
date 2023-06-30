@@ -7,9 +7,10 @@ from autonoaa.Core import DB
 from autonoaa.Core.scheduler import schedule
 from autonoaa.Device import Device
 from autonoaa.Recorder.capture import capture
+from crontab import CronTab
+import re
 
 #TODO: first time setup
-#TODO: add option to revert all changes to cron
 #TODO: Add reschedule cronjob
 #TODO; Fix package struct and INITs
 def main():
@@ -37,6 +38,14 @@ def main():
     if '-c' in sys.argv:
         pass_id = sys.argv[sys.argv.index('-c') + 1]
         capture(pass_id, device)
+        return True
+    elif '-r' in sys.argv:
+        cron = CronTab(user=True)
+        iter = cron.find_comment(re.compile(r"autonoaa-.*"))
+        for job in iter:
+            cron.remove(job)
+        cron.write()
+        print("Removed autonoaa cronjobs")
         return True
 
     sats = DB.get_all_satellites()
