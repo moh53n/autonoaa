@@ -9,7 +9,7 @@ setuptools.setup(
     name="autonoaa",
     version="0.0.1",
     author="Mohsen Tahmasebi",
-    author_email="moh53n@outlook.com",
+    author_email="moh53n@moh53n.ir",
     description="An automatic weather satellite receiver for SDR dongles",
     long_description=long_description,
     long_description_content_type="text/markdown",
