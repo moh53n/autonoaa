@@ -9,10 +9,27 @@ from autonoaa.Device import Device
 from autonoaa.Recorder.capture import capture
 from crontab import CronTab
 import re
+import subprocess
 
 #TODO: Add reschedule cronjob
 #TODO; Fix package struct and INITs
 def main():
+    try:
+        subprocess.check_output("which rtl_fm", shell=True)
+    except:
+        print("rtl_fm not installed, exiting...")
+        return False
+    try:
+        subprocess.check_output("which satdump", shell=True)
+    except:
+        print("satdump not installed, exiting...")
+        return False
+    try:
+        subprocess.check_output("which sox", shell=True)
+    except:
+        print("sox not installed, exiting...")
+        return False
+    
     if not os.path.isdir(os.getenv('HOME') + "/.autonoaa"):
         print("Creating autonoaa directory")
         os.mkdir(os.getenv('HOME') + "/.autonoaa")
