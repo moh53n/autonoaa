@@ -36,3 +36,26 @@ def schedule(config):
             start = (pass_[0].replace(tzinfo=tz.tzutc())).astimezone(tz.tzlocal())
             end = (pass_[1].replace(tzinfo=tz.tzutc())).astimezone(tz.tzlocal())
             new_pass(sat.sat_id, start, end, 0) #FIXME
+
+def scheduler_cron():
+    cron = CronTab(user=True)
+    scheduler_line = False
+    reboot_scheduler_line = False
+    bin_path = os.getenv("HOME") + "/.local/bin/autonoaa"
+
+    for line in cron.lines:
+        if "autonoaa-scheduler" in line:
+            scheduler_line = True
+        if "autonoaa-reboot-scheduler" in line:
+            reboot_scheduler_line = True
+
+    if not scheduler_line:
+        job = cron.new(command=f'{bin_path} -s', comment=f'autonoaa-scheduler')
+        job.minute.on(0)
+        job.hour.on(1)
+        cron.write()
+
+    if not reboot_scheduler_line:
+        job = cron.new(command=f'{bin_path} -s', comment=f'autonoaa-reboot-scheduler')
+        job.every_reboot()
+        cron.write()

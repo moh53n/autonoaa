@@ -4,14 +4,13 @@ from autonoaa.Core import config as Conf
 from autonoaa.helpers.tle import setup_tle
 from autonoaa.helpers.default import add_default_sats
 from autonoaa.Core import DB
-from autonoaa.Core.scheduler import schedule
+from autonoaa.Core.scheduler import schedule, scheduler_cron
 from autonoaa.Device import Device
 from autonoaa.Recorder.capture import capture
 from crontab import CronTab
 import re
 import subprocess
 
-#TODO: Add reschedule cronjob
 #TODO; Fix package struct and INITs
 def main():
     try:
@@ -49,6 +48,7 @@ def main():
         print("Creating captures directory")
         os.mkdir(os.getenv('HOME') + "/.autonoaa/captures")
 
+    scheduler_cron()
     DB.connect()
 
     if '-c' in sys.argv:
@@ -63,6 +63,10 @@ def main():
         cron.write()
         print("Removed autonoaa cronjobs")
         return True
+    elif '-s' in sys.argv:
+        setup_tle()
+        schedule(config)
+        return True
 
     sats = DB.get_all_satellites()
 
@@ -74,4 +78,4 @@ def main():
     schedule(config)
 
 if __name__ == "__main__":
-    main()
+    main() #TODO: return correct status code
