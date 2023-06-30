@@ -34,17 +34,19 @@ def run(device_conf, satellite, duration: int):
 #TODO: check if the pass is ended
 def capture(pass_id, device):
     pass_ = DB.get_pass(pass_id)
+
+    cron = CronTab(user=True)
+    cron.remove_all(comment=f'autonoaa-pass-{str(pass_id)}')
+    cron.write()
+
     if len(pass_) == 0:
         print("Pass not exists")
         return False
     if pass_[0].pass_done:
         print("Pass already completed")
         return False
-    
-    cron = CronTab(user=True)
-    cron.remove_all(comment=f'autonoaa-pass-{str(pass_id)}')
-    cron.write()
 
+    DB.pass_set_done(pass_id)
     sat = DB.get_satellite(pass_[0].sat_id)
 
     start = datetime.datetime.strptime(pass_[0].pass_start, "%Y-%m-%d %H:%M:%S.%f%z")
