@@ -20,7 +20,6 @@ def main():
     config = Conf.load_config()
     device = Device(
         float(config['Device']['gain']),
-        int(config['Device']['sample_rate']),
         int(config['Device']['freq_correction'])
     )
 

@@ -3,13 +3,18 @@ import os
 
 #TODO: add conflict policy and min el
 def create_config():
+    print("Config not exists, Generating one...")
+    gain = float(input("Enter the SDR gain: "))
+    freq_correction = int(input("Enter the SDR frequency correction (PPM): "))
+    lat = float(input("Enter the latitude: "))
+    lon = float(input("Enter the longitude: "))
+    alt = int(input("Enter the altitude (meters): "))
     config = configparser.ConfigParser()
-    config['Device'] = {'gain': '0.0',
-                     'sample_rate': '2400000', #TODO
-                     'freq_correction': '0'}
-    config['Location'] = {'latitude': '0.0',
-                     'longitude': '0.0',
-                     'altitude': '0.0'}
+    config['Device'] = {'gain': gain,
+                     'freq_correction': freq_correction}
+    config['Location'] = {'latitude': lat,
+                     'longitude': lon,
+                     'altitude': alt}
     with open(os.getenv('HOME') + "/.autonoaa/config.ini", "w+") as f:
         config.write(f)
 
