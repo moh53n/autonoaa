@@ -20,7 +20,7 @@ def rec(id, device_conf, satellite, duration):
         CAPTURE_TIME = duration,
         freq = satellite.frequency,
         FREQ_OFFSET = device_conf.freq_correction,
-        BANDWIDTH = satellite.bandwidth * 2,
+        BANDWIDTH = satellite.bandwidth,
         GAIN = device_conf.gain,
         OUT_FILE = os.getenv('HOME') + "/.autonoaa/captures/" + f"{id}.wav"
     )
