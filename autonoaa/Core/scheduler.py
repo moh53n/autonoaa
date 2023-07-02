@@ -12,8 +12,8 @@ def new_pass(sat_id, pass_start, pass_end, pass_max_el):
         cron = CronTab(user=True)
         pass_id = DB.new_pass(sat_id, pass_start, pass_end, pass_max_el)
         bin_path = os.getenv("HOME") + "/.local/bin/autonoaa"
-        job = cron.new(command=f'{bin_path} -c {str(pass_id)}', comment=f'autonoaa-pass-{str(pass_id)}')
-        job.minute.on(pass_start.minute) #FIXME seconds
+        job = cron.new(command=f'/bin/sleep {pass_start.second} && {bin_path} -c {str(pass_id)}', comment=f'autonoaa-pass-{str(pass_id)}')
+        job.minute.on(pass_start.minute)
         job.hour.on(pass_start.hour)
         cron.write()
 
