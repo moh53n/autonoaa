@@ -44,9 +44,9 @@ def scheduler_cron():
     bin_path = os.getenv("HOME") + "/.local/bin/autonoaa"
 
     for line in cron.lines:
-        if "autonoaa-scheduler" in line:
+        if "autonoaa-scheduler" in str(line):
             scheduler_line = True
-        if "autonoaa-reboot-scheduler" in line:
+        if "autonoaa-reboot-scheduler" in str(line):
             reboot_scheduler_line = True
 
     if not scheduler_line:
