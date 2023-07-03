@@ -1,7 +1,7 @@
 import configparser
 import os
 
-#TODO: add conflict policy and min el
+#TODO: add conflict policy
 def create_config():
     print("Config not exists, Generating one...")
     gain = float(input("Enter the SDR gain: "))
@@ -9,12 +9,14 @@ def create_config():
     lat = float(input("Enter the latitude: "))
     lon = float(input("Enter the longitude: "))
     alt = int(input("Enter the altitude (meters): "))
+    min_elevation = float(input("Enter the minimum required elevation: "))
     config = configparser.ConfigParser()
     config['Device'] = {'gain': gain,
                      'freq_correction': freq_correction}
     config['Location'] = {'latitude': lat,
                      'longitude': lon,
                      'altitude': alt}
+    config['Passes'] = {'min_elevation': min_elevation}
     with open(os.getenv('HOME') + "/.autonoaa/config.ini", "w+") as f:
         config.write(f)
 

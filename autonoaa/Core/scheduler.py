@@ -33,9 +33,23 @@ def schedule(config):
         )
         for pass_ in passes:
             print(pass_)
+
+            look = Orbital(
+                sat.name, tle_file=os.getenv("HOME") + "/.autonoaa/tle/weather.txt"
+            ).get_observer_look(
+                pass_[2],
+                float(config["Location"]["longitude"]),
+                float(config["Location"]["latitude"]),
+                float(config["Location"]["altitude"])/1000
+            )
+
+            if look[1] < float(config['Passes']['min_elevation']):
+                print("Pass below the required elevation, ignoring...")
+                continue
+
             start = (pass_[0].replace(tzinfo=tz.tzutc())).astimezone(tz.tzlocal())
             end = (pass_[1].replace(tzinfo=tz.tzutc())).astimezone(tz.tzlocal())
-            new_pass(sat.sat_id, start, end, 0) #FIXME
+            new_pass(sat.sat_id, start, end, look[1])
 
 def scheduler_cron():
     cron = CronTab(user=True)
