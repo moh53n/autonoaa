@@ -30,7 +30,10 @@ def rec(id, device_conf, satellite, duration):
 def run(device_conf, satellite, duration: int):
     id = satellite.name + "-" + str(int(time())) #FIXME
     rec(id, device_conf, satellite, duration)
-    satdump(id, satellite, f"{id}.wav")
+    try:
+        satdump(id, satellite, f"{id}.wav")
+    except:
+        pass #TODO: LOG
 
 def capture(pass_id, device):
     cron = CronTab(user=True)
