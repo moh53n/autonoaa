@@ -9,6 +9,10 @@ def send(config, path, max_el, start_time, sat_name):
     for file in os.listdir(path):
         if file.endswith(".png"):
             png_files.append(os.path.join(path, file))
+    if os.path.isdir(path + '/MSU-MR'):
+        for file in os.listdir(path + '/MSU-MR'):
+            if file.endswith(".png"):
+                png_files.append(os.path.join(path + '/MSU-MR', file))
 
     if len(png_files) < 2:
         return False
