@@ -33,11 +33,11 @@ def run(device_conf, satellite, duration: int):
     satdump(id, satellite, f"{id}.wav")
 
 def capture(pass_id, device):
-    pass_ = DB.get_pass(pass_id)
-
     cron = CronTab(user=True)
     cron.remove_all(comment=f'autonoaa-pass-{str(pass_id)}')
     cron.write()
+
+    pass_ = DB.get_pass(pass_id)
 
     if len(pass_) == 0:
         print("Pass not exists")
