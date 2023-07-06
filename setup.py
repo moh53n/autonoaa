@@ -25,7 +25,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
     license='MIT',
-    install_requires=['python-crontab', 'pyorbital', 'requests', 'python-dateutil', 'peewee'],
+    install_requires=['python-crontab', 'pyorbital', 'requests', 'python-dateutil', 'peewee', 'pyTelegramBotAPI'],
     entry_points = {
         'console_scripts': [
             'autonoaa = autonoaa:main',
