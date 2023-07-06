@@ -1,7 +1,7 @@
 import configparser
 import os
 
-#TODO: add conflict policy
+#TODO: Explain every entry in the README and print the link
 def create_config():
     print("Config not exists, Generating one...")
     gain = float(input("Enter the SDR gain: "))
@@ -10,13 +10,17 @@ def create_config():
     lon = float(input("Enter the longitude: "))
     alt = int(input("Enter the altitude (meters): "))
     min_elevation = float(input("Enter the minimum required elevation: "))
+    if input("Do you want to prioritize Meteor satellites over NOAA in a pass conflict? (Y/N): ").lower() == "y":
+        prioritize_meteor = True
+    else:
+        prioritize_meteor = False
     config = configparser.ConfigParser()
     config['Device'] = {'gain': gain,
                      'freq_correction': freq_correction}
     config['Location'] = {'latitude': lat,
                      'longitude': lon,
                      'altitude': alt}
-    config['Passes'] = {'min_elevation': min_elevation}
+    config['Passes'] = {'min_elevation': min_elevation, 'prioritize_meteor': prioritize_meteor}
     telegram_enabled = False
     telegram_token = ''
     telegram_chat = ''
