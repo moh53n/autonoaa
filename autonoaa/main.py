@@ -53,7 +53,7 @@ def main():
 
     if '-c' in sys.argv:
         pass_id = sys.argv[sys.argv.index('-c') + 1]
-        capture(pass_id, device)
+        capture(pass_id, device, config)
         return True
     elif '-r' in sys.argv:
         cron = CronTab(user=True)

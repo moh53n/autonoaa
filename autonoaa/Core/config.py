@@ -17,6 +17,18 @@ def create_config():
                      'longitude': lon,
                      'altitude': alt}
     config['Passes'] = {'min_elevation': min_elevation}
+    telegram_enabled = False
+    telegram_token = ''
+    telegram_chat = ''
+    if input("Do you want to enable and setup Telegram exporter? (Y/N): ").lower() == "y":
+        telegram_enabled = True
+        telegram_token = input("Enter the Telegram Bot token: ")
+        telegram_chat = input("Enter the Telegram chat ID: ")
+
+    config['TelegramExporter'] = {'telegram_enabled': telegram_enabled,
+                     'telegram_token': telegram_token,
+                     'telegram_chat': telegram_chat}
+
     with open(os.getenv('HOME') + "/.autonoaa/config.ini", "w+") as f:
         config.write(f)
 

@@ -6,6 +6,7 @@ import subprocess
 from autonoaa.satdump import satdump
 from crontab import CronTab
 from dateutil import tz
+from autonoaa.exporters import telegram
 
 METEOR_COMMAND = """timeout "{CAPTURE_TIME}" rtl_fm -M raw -f "{freq}" -p "{FREQ_OFFSET}" -s {BANDWIDTH} -g "{GAIN}" | sox -t raw -r {BANDWIDTH} -c 2 -b 16 -e signed - -t wav "{OUT_FILE}" rate 96k"""
 NOAA_COMMAND = """timeout "{CAPTURE_TIME}" rtl_fm -f "{freq}" -p "{FREQ_OFFSET}" -s {BANDWIDTH} -g "{GAIN}" -E wav -E deemp -F 9 - | sox -t raw -e signed -c 1 -b 16 -r {BANDWIDTH} - "{OUT_FILE}" rate 11025"""
@@ -27,15 +28,14 @@ def rec(id, device_conf, satellite, duration):
     print(cmd)
     subprocess.check_output(cmd, shell=True)
 
-def run(device_conf, satellite, duration: int):
-    id = satellite.name + "-" + str(int(time())) #FIXME
+def run(id, device_conf, satellite, duration: int):
     rec(id, device_conf, satellite, duration)
     try:
         satdump(id, satellite, f"{id}.wav")
     except:
         pass #TODO: LOG
 
-def capture(pass_id, device):
+def capture(pass_id, device, config):
     cron = CronTab(user=True)
     cron.remove_all(comment=f'autonoaa-pass-{str(pass_id)}')
     cron.write()
@@ -61,6 +61,15 @@ def capture(pass_id, device):
 
     duration = (end - start).total_seconds()
 
-    run(device, sat[0], duration)
-    
+    id = sat[0].name + "-" + str(int(time()))  # FIXME
 
+    run(id, device, sat[0], duration)
+
+    if config['TelegramExporter'].getboolean("telegram_enabled"):
+        telegram.send(
+            config,
+            os.getenv("HOME") + "/.autonoaa/captures/" + id,
+            pass_.pass_max_el,
+            start.strftime("%Y-%m-%d %H:%M %z"),
+            sat[0].name
+        )
