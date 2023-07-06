@@ -10,6 +10,9 @@ def send(config, path, max_el, start_time, sat_name):
         if file.endswith(".png"):
             png_files.append(os.path.join(path, file))
 
+    if len(png_files) < 2:
+        return False
+
     media_groups = []
 
     for i in range(0, len(png_files), 10):
