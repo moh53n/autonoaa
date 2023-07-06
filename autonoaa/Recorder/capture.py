@@ -69,7 +69,7 @@ def capture(pass_id, device, config):
         telegram.send(
             config,
             os.getenv("HOME") + "/.autonoaa/captures/" + id,
-            pass_.pass_max_el,
+            pass_[0].pass_max_el,
             start.strftime("%Y-%m-%d %H:%M %z"),
             sat[0].name
         )
